@@ -178,3 +178,21 @@ export const BOOK_DAYS = [['Mon', '26'], ['Tue', '27'], ['Wed', '28'], ['Thu', '
 export const BOOK_DAYS_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 export const BOOK_FREE = [5, 8, 3, 9, 6, 2];
 export const BOOK_TIMES = ['9:00', '9:20', '9:40', '10:20', '11:00', '11:40', '12:20', '2:00', '2:40', '3:40', '4:20', '5:40'];
+
+/* ---------- My Pet demo (board MyPet) ---------- */
+export const MYPET = {
+  facts: [['Born', '2 Mar 2023 · 3 yrs'], ['Microchip', '372 1410 0028 5531'], ['Pet passport', 'IE 0147 2209'], ['Insured with', 'Allianz Pet'], ['Usual vet', 'Dr Ciarán Doyle']],
+  meds: [{ t: 'Milbemax (worming)', d: 'One tablet with food', when: 'Due today', cls: 'tag-h' }, { t: 'Bravecto (fleas & ticks)', d: 'Every 12 weeks', when: '9 Dec', cls: 'tag-blue' }, { t: 'Weight clinic check', d: 'With Aoife, 10 mins', when: '18 Nov', cls: 'tag-blue' }],
+  vax: [{ t: 'Puppy 1', d: 'Apr 2023' }, { t: 'Puppy 2', d: 'May 2023' }, { t: 'Booster', d: 'Nov 2024' }, { t: 'Booster', d: 'Nov 2025' }, { t: 'Booster', d: 'Due 11 Nov', due: true }],
+  visits: [{ date: '14 Oct 2026', t: 'Weight clinic', note: 'Down another 0.4 kg. Keep going — same food, smaller breakfast.', who: 'Aoife, nurse' }, { date: '2 Aug 2026', t: 'Ear infection', note: 'Left ear. Drops for seven days, rechecked and clear.', who: 'Dr Ciarán Doyle' }, { date: '12 May 2026', t: 'Weight clinic — first visit', note: '15.1 kg. Aiming for 13 kg by Christmas.', who: 'Aoife, nurse' }, { date: '10 Nov 2025', t: 'Yearly booster', note: "All good. A bit of tartar — brush if she'll let you.", who: 'Dr Niamh Kearney' }],
+  reminders: [{ id: 'booster', t: 'Jab due', d: 'A week before, then on the day' }, { id: 'worming', t: 'Worming and fleas', d: "Monthly, the morning it's due" }, { id: 'appt', t: 'Appointment reminder', d: 'The evening before, at 6pm' }, { id: 'results', t: 'Test results back', d: 'As soon as the vet has looked at them' }],
+  channels: ['Email', 'Text', 'Call'],
+  defaults: { booster: 'Text', worming: 'Email', appt: 'Text', results: 'Call' },
+  msgs: {
+    booster: "Hi Sinéad, Juno's yearly booster is due on 11 Nov. Reply BOOK and we'll hold 9:40am on Tue 11th for her, or book online. — Kenilworth Vets",
+    worming: "Morning! Juno's worming tablet is due today — one Milbemax, with her breakfast. — Kenilworth Vets",
+    appt: "Just a reminder: Juno's seeing Dr Doyle tomorrow at 9:40am. Reply C if you need to cancel. — Kenilworth Vets",
+    results: "Good news — Juno's bloods are back and all normal. Dr Kearney's notes are in My Pet. — Kenilworth Vets"
+  },
+  second: { off: 'Add a partner or housemate so they get the same reminders', on: 'Darragh Murphy · 086 555 0410 gets jab and appointment texts too' }
+};
