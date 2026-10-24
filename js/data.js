@@ -46,3 +46,44 @@ export const MOMENTS = [
 
 /* ---------- opening hours (board Main/Contact: hrs) ---------- */
 export const HOURS_ROWS = [['Monday', '8:30 – 7pm'], ['Tuesday', '8:30 – 7pm'], ['Wednesday', '8:30 – 7pm'], ['Thursday', '8:30 – 7pm'], ['Friday', '8:30 – 7pm'], ['Saturday', '9 – 2pm'], ['Sunday', 'Closed']];
+
+/* ---------- services (board Services: data) — [title, line, price, steps] ---------- */
+export const SERVICES = [
+  { name: 'Prevention', blurb: 'Keeping them well', items: [
+    ['Annual booster & health check', 'A proper nose-to-tail check, a weigh and their yearly vaccine.', '€72', ["A weigh and a chat about how the year's been", 'Eyes, ears, heart, teeth and joints checked', 'The booster itself — a couple of seconds', "Their card updated and next year's reminder set"]],
+    ['Puppy & kitten course', 'Two vaccines, a microchip check, worming and a flea plan.', '€140', ['First visit at eight or nine weeks', 'Second vaccine three or four weeks later', 'Microchip checked and registered to you', 'A plan for neutering and boosters']],
+    ['Microchipping', 'The law for dogs in Ireland, and a very good idea for cats.', '€35', ["A quick scan in case they're already chipped", 'Chip placed under the scruff — like a jab', 'Scanned again to make sure it reads', 'Registered in your name on the Fido database']],
+    ['Nurse clinic', 'Nails, worming, anal glands and flea and tick plans.', '€25', ['Fifteen minutes with one of our nurses', 'Whatever needs doing, done on the table', 'Weight noted on their file', 'Tips for keeping on top of it at home']] ] },
+  { name: 'Seeing a vet', blurb: "When something's not right", items: [
+    ['Consultation', 'Fifteen minutes with a vet. Same-day slots every weekday.', '€65', ["You tell us what you've noticed", 'The vet examines them and explains what they find', 'Options and costs before any tests', 'Medicine, a plan, or a follow-up booked']],
+    ['Blood tests', 'Run in our own lab — most results in about 20 minutes.', '€95', ['A small sample from the leg or neck', 'Run here while you wait', 'The vet talks you through the results', 'A copy sent to My Pet']],
+    ['X-ray & ultrasound', 'Done here, usually with a light sedative.', '€180', ['Drop them in first thing', 'Sedation if needed, then the imaging', 'The vet looks over the images', 'Collect in the afternoon and we go through it']] ] },
+  { name: 'Surgery & dental', blurb: 'Planned and explained', items: [
+    ['Neutering', 'Dogs and cats, as a day patient. Check-up afterwards included.', '€210', ['A pre-op check and fasting advice', 'Drop off at 8:30, surgery that morning', "We ring you when they're awake", 'Home that evening, check on day three']],
+    ['Dental scale & polish', 'Under anaesthetic. We ring before any extractions.', '€260', ['Teeth looked at in a consult first', 'Cleaned, polished and charted', 'A call before anything comes out', 'Before and after photos for you']],
+    ['Lump removal', 'Quoted after a consult. Lab results within the week.', '€240', ['A consult and a quick needle sample', 'Surgery as a day patient', 'The lump sent off to the lab', 'A call with results, stitches out at ten days']] ] },
+  { name: 'Medical boarding', blurb: 'When they need a vet nearby', items: [
+    ['Medical boarding', 'For pets on medication, diabetics, or anyone just out of surgery.', '€45', ['A visit first to meet them and plan their care', 'Meds and checks done on a written chart', 'A photo every day on WhatsApp', 'A full handover when you collect them']] ] }
+];
+
+/* ---------- new pet guide (board NewPet: D) — [age, ageSub, title, line, price] ---------- */
+export const NEW_PET = {
+  Puppy: [
+    ['8 weeks', 'or the day they come home', 'First visit and jab', 'A good look over, a weigh, their first vaccine — and plenty of time for questions about food, sleep and toilet training.', '€75'],
+    ['10–12 weeks', 'three or four weeks later', 'Second jab', 'That finishes the course. A week after this they can go out on walks and meet other dogs.', '€55'],
+    ['12 weeks', 'at the same visit', 'Microchip in your name', "It's the law for dogs. Most breeders chip them — we'll check it scans and is registered to you.", '€15'],
+    ['Every month', 'until six months', 'Worming and fleas', 'A nurse sets up a plan and adjusts the dose as they grow. No guessing in the pet shop.', '€12'],
+    ['6 months', 'a chat, not a booking', 'Neutering — when?', "Timing depends on breed and size. We'll talk it through and explain why.", 'Free'],
+    ['12 months', 'their first birthday', 'First booster', "Teeth, joints, weight and the booster. After that it's once a year.", '€72']],
+  Kitten: [
+    ['9 weeks', 'or the day they come home', 'First visit and jab', 'A good look over, a weigh, their first vaccine, and advice on litter trays and scratching.', '€75'],
+    ['12 weeks', 'three weeks later', 'Second jab', 'That finishes the course. They can head outdoors about a week after.', '€55'],
+    ['12 weeks', 'at the same visit', 'Microchip', 'Strongly recommended — indoor cats escape too. Scanned and registered to you.', '€35'],
+    ['Every month', 'until six months', 'Worming and fleas', "A nurse sets it up by weight. Spot-on or tablet — whichever you'll actually manage.", '€10'],
+    ['4–5 months', 'before they go out', 'Neutering', 'Earlier for cats than dogs. A day patient, home that evening.', '€120'],
+    ['12 months', 'their first birthday', 'First booster', "Teeth, weight and the booster. Then it's once a year.", '€72']]
+};
+export const NEW_PET_TOTAL = {
+  Puppy: 'The whole first year comes to roughly €330 plus worming. Neutering is quoted separately.',
+  Kitten: 'The whole first year comes to roughly €400, neutering and worming included.'
+};
