@@ -114,3 +114,57 @@ export const EMERGENCY_STEPS = [
 ];
 // the Contact page's hours table spells Sunday out (board Contact: hrs)
 export const CONTACT_HOURS = HOURS_ROWS.map(h => h[0] === 'Sunday' ? ['Sunday', 'Closed — ring for emergencies'] : h);
+
+/* ---------- the Noticeboard (board Noticeboard: all) — ids in SPEC §2.2 order ---------- */
+export const NOTICEBOARD = [
+  { id: 'bobby', k: 'Birthdays', tagClass: 'tag-b', tag: 'Birthday', title: 'Bobby turned four', body: 'Four years since a very small, very loud Jack Russell cross came in for his first jab. Still loud. Teeth spotless at his check-up, and he walked straight past the scales like he owns the place.', date: '12 Oct 2026', who: 'Written by Ciarán', cta: "Read Bobby's story", img: IMG.sofa, alt: 'Bobby asleep on the sofa' },
+  { id: 'miso', k: 'Recoveries', tagClass: 'tag-r', tag: 'On the mend', title: "Miso's home", body: 'Miso had a lump taken off her side in September — nothing sinister, thank God. The shaved patch is nearly gone and, according to her family, so is her patience with the cone.', date: '3 Oct 2026', who: 'Written by Aoife', cta: 'Read more', img: IMG.miso, alt: 'Miso the tabby asleep on a bed' },
+  { id: 'pip', k: 'Recoveries', tagClass: 'tag-r', tag: 'Teeth sorted', title: 'Pip can crunch again', body: "Rabbit teeth never stop growing, and Pip's had grown into a problem. A dental under a light anaesthetic, a week of soft greens, and he's back on the carrots.", date: '29 Sep 2026', who: 'Written by Niamh', cta: 'Read more', img: IMG.pip, alt: 'Pip the rabbit on a towel' },
+  { id: 'luna', k: 'Birthdays', tagClass: 'tag-b', tag: 'Thirteen', title: 'Luna, still going strong', body: "Our oldest regular. Slower on the stairs since the spring, on a joint plan that's working, and still first to the bowl every evening.", date: '27 Sep 2026', who: 'Written by Niamh', cta: 'Read more', img: IMG.luna, alt: 'Luna the old Labrador lying by her bowl' },
+  { id: 'biscuit', k: 'Birthdays', tagClass: 'tag-b', tag: 'First visit', title: 'Biscuit on the scales', body: "Two kilos of cockapoo who wouldn't stay on the scales for more than half a second. First jab done, second one booked for November.", date: '22 Sep 2026', who: 'Written by Gráinne', cta: 'Read more', img: IMG.biscuit, alt: 'Biscuit the puppy on the scales' },
+  { id: 'tina', k: 'Needs a home', tagClass: 'tag-h', tag: 'Needs a home', title: "Tina's looking for a sofa", body: "A retired racing greyhound, five, gentle and a bit shy with new people. Grand with cats, not so much with squirrels. She's staying with Tomasz until the right family comes along.", date: '20 Sep 2026', who: 'Ask Gráinne on the desk', cta: 'Ask about Tina', img: IMG.tina, alt: 'Tina the brindle greyhound' }
+];
+export const NOTICEBOARD_FILTERS = ['Everything', 'Birthdays', 'Recoveries', 'Needs a home'];
+
+/* ---------- story pages (board Story for Bobby; the other five written from their card facts only) ---------- */
+const TEAM_IMG = { ciaran: ['images/t_ciaran.webp', '45% 20%'], aoife: ['images/t_aoife.webp', '55% 30%'], niamh: ['images/t_niamh.webp', '40% 30%'], grainne: ['images/t_grainne.webp', '45% 30%'] };
+export const STORIES = {
+  bobby: { tagClass: 'tag-b', tag: 'Birthday', date: '12 October 2026', title: 'Bobby turned four',
+    photos: [[IMG.sofa, 'Bobby asleep on the sofa', 'Birthday morning, on sofa duty'], [IMG.dental, 'Bobby having his teeth checked', 'His yearly check — teeth spotless'], [IMG.park, 'Bobby on a lead in the park', 'Kenilworth Square, straight after']],
+    body: ['Bobby first came in at nine weeks old, small enough to sit in one hand and already the loudest thing in the waiting room. Gráinne still does the impression.',
+      "He's a Jack Russell cross with strong opinions — mostly about the scales, which he walks around rather than onto. We got a weight out of him anyway at his yearly check last week, had a look at his teeth (spotless — his family actually brushes them, fair play) and gave him his booster.",
+      "Four years, no operations, and one sock incident in 2024 that we've all agreed not to talk about. Happy birthday, Bobby."],
+    author: { name: 'Dr Ciarán Doyle', sub: "Bobby's vet since 2022 · shared with his family's permission", img: TEAM_IMG.ciaran } },
+  miso: { tagClass: 'tag-r', tag: 'On the mend', date: '3 October 2026', title: "Miso's home",
+    photos: [[IMG.miso, 'Miso the tabby asleep on a bed']],
+    body: ['Miso came in to us in September with a lump on her side. We took it off and had it checked, and the answer was the one we were all hoping for — nothing sinister, thank God.',
+      "She has spent the weeks since in a cone, and she has not been shy about what she thinks of it. The shaved patch on her side is nearly gone now and, according to her family, so is her patience with the cone.",
+      "The fur's nearly grown back and, we're told, so has the attitude. That is exactly what we like to hear. Good girl, Miso."],
+    author: { name: 'Aoife Brennan', sub: "Veterinary nurse · shared with her family's permission", img: TEAM_IMG.aoife } },
+  pip: { tagClass: 'tag-r', tag: 'Teeth sorted', date: '29 September 2026', title: 'Pip can crunch again',
+    photos: [[IMG.pip, 'Pip the rabbit on a towel']],
+    body: ["Rabbit teeth never stop growing, and Pip's had grown into a problem. So he came in to us for a dental.",
+      'We did it under a light anaesthetic, tidied the teeth up and sent him home with orders for a week of soft greens.',
+      "A week on, he's back on the carrots and crunching away like nothing happened. Fair play, Pip."],
+    author: { name: 'Dr Niamh Kearney', sub: "Founder · shared with his family's permission", img: TEAM_IMG.niamh } },
+  luna: { tagClass: 'tag-b', tag: 'Thirteen', date: '27 September 2026', title: 'Luna, still going strong',
+    photos: [[IMG.luna, 'Luna the old Labrador lying by her bowl']],
+    body: ['Luna has turned thirteen, which makes her our oldest regular — and she wears it well.',
+      "She has been a bit slower on the stairs since the spring, so we put her on a joint plan. It's working, and she is still first to the bowl every evening.",
+      'Happy birthday, Luna. Thirteen suits you.'],
+    author: { name: 'Dr Niamh Kearney', sub: "Founder · shared with her family's permission", img: TEAM_IMG.niamh } },
+  biscuit: { tagClass: 'tag-b', tag: 'First visit', date: '22 September 2026', title: 'Biscuit on the scales',
+    photos: [[IMG.biscuit, 'Biscuit the puppy on the scales']],
+    body: ["Biscuit came in for a first visit: two kilos of cockapoo who wouldn't stay on the scales for more than half a second. We got a weight in the end.",
+      "First jab done. The second one is booked for November, so we'll be seeing Biscuit again soon.",
+      'Welcome to the practice, Biscuit. We have a feeling the scales are going to get used to you.'],
+    author: { name: 'Gráinne Ryan', sub: "Front desk · shared with the family's permission", img: TEAM_IMG.grainne } },
+  tina: { tagClass: 'tag-h', tag: 'Needs a home', date: '20 September 2026', title: "Tina's looking for a sofa",
+    photos: [[IMG.tina, 'Tina the brindle greyhound']],
+    body: ["Tina is a retired racing greyhound, five years old, gentle and a bit shy with new people until she has decided you're grand.",
+      "She's good with cats and not so sure about squirrels. For now she is staying with Tomasz, one of our nurses, until the right family comes along.",
+      "If you think that family might be yours, ask Gráinne on the desk. She'll tell you all about Tina and sort out a time to meet her."],
+    author: { name: 'Gráinne Ryan', sub: 'On the desk · ask her about meeting Tina', img: TEAM_IMG.grainne },
+    cta: { t: 'Ask about Tina', href: 'contact/' } }
+};
+export const STORY_ORDER = ['bobby', 'miso', 'pip', 'luna', 'biscuit', 'tina'];
