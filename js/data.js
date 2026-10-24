@@ -168,3 +168,13 @@ export const STORIES = {
     cta: { t: 'Ask about Tina', href: 'contact/' } }
 };
 export const STORY_ORDER = ['bobby', 'miso', 'pip', 'luna', 'biscuit', 'tina'];
+
+/* ---------- booking (board Book: R, names, dd, full, times) ---------- */
+export const BOOK_REASONS = [['A jab or booster', 'With a quick health check', '15 min', '€72'], ["Something's not right", 'Off food, limping, sick', '15 min', '€65'], ['A follow-up', 'After surgery or treatment', '10 min', '€35'], ['A senior check', 'Bloods, joints, blood pressure', '30 min', '€110'], ['Nurse clinic', 'Nails, worming, a weigh', '15 min', '€25'], ['A travel check', 'Passport, rabies, tapeworm', '20 min', '€60']];
+export const BOOK_STEPS = ['Pet', 'Reason', 'Time', 'Details'];
+export const BOOK_SPECIES = ['Dog', 'Cat', 'Rabbit', 'Something else'];
+export const BOOK_VETS = ["Whoever's free", 'Dr Niamh Kearney', 'Dr Ciarán Doyle'];
+export const BOOK_DAYS = [['Mon', '26'], ['Tue', '27'], ['Wed', '28'], ['Thu', '29'], ['Fri', '30'], ['Sat', '31']];
+export const BOOK_DAYS_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+export const BOOK_FREE = [5, 8, 3, 9, 6, 2];
+export const BOOK_TIMES = ['9:00', '9:20', '9:40', '10:20', '11:00', '11:40', '12:20', '2:00', '2:40', '3:40', '4:20', '5:40'];
