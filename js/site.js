@@ -35,7 +35,7 @@ function trapTab(e, root) {
 }
 
 /* ---------- state ---------- */
-const st = { p: 0, dragging: false, reg: false, regDone: false, sp: 'Dog', opener: null, emOpener: null };
+const st = { p: 0, dragging: false, reg: false, regDone: false, sp: 'Dog', opener: null, emOpener: null, menu: false, menuOpener: null };
 const page = $('[data-page]');
 const strip = $('[data-estrip]');
 const stripIn = strip && $('.estrip-in', strip);
@@ -43,6 +43,9 @@ const ebody = strip && $('[data-ebody]', strip);
 const scrim = $('[data-scrim]');
 const reg = $('[data-reg]');
 const edgeTab = $('[data-etab="edge"]');
+// tablet/phone menu (its button is only displayed at ≤1100 px, so desktop never opens it)
+const mnav = $('[data-mnav]');
+const MENU_MQ = window.matchMedia ? window.matchMedia('(max-width: 1100px)') : null;
 let drag = null;
 let hideTimer = null;
 
@@ -60,8 +63,8 @@ function render() {
   filterTargets.forEach(el => { el.style.filter = filter; el.style.transition = filterT; });
 
   if (scrim) {
-    scrim.style.opacity = st.reg ? '1' : (p * 0.9).toFixed(3);
-    scrim.style.pointerEvents = (st.reg || p > 0.5) ? 'auto' : 'none';
+    scrim.style.opacity = (st.reg || st.menu) ? '1' : (p * 0.9).toFixed(3);
+    scrim.style.pointerEvents = (st.reg || st.menu || p > 0.5) ? 'auto' : 'none';
     scrim.style.transition = st.dragging ? 'none' : `opacity .55s ${EASE}`;
   }
   if (strip) {
@@ -89,7 +92,13 @@ function render() {
     if (done) done.hidden = !st.regDone;
     $$('[data-species] .chip', reg).forEach(c => c.setAttribute('aria-pressed', c.textContent.trim() === st.sp ? 'true' : 'false'));
   }
-  const lock = p > 0.01 || st.reg;
+  if (mnav) {
+    mnav.classList.toggle('is-open', st.menu);
+    mnav.setAttribute('aria-hidden', st.menu ? 'false' : 'true');
+    if (st.menu) mnav.removeAttribute('inert'); else mnav.setAttribute('inert', '');
+    $$('[data-open-menu]').forEach(b => b.setAttribute('aria-expanded', st.menu ? 'true' : 'false'));
+  }
+  const lock = p > 0.01 || st.reg || st.menu;
   document.documentElement.style.overflow = lock ? 'hidden' : '';
   document.body.style.overflow = lock ? 'hidden' : '';
   document.dispatchEvent(new CustomEvent('kv:render', { detail: { p, reg: st.reg, dragging: st.dragging } }));
@@ -120,24 +129,46 @@ function focusStrip() {
   hideTimer = setTimeout(() => { if (st.p > 0.5) strip.focus({ preventScroll: true }); }, delay);
 }
 export function openEmergency(opener) {
-  st.emOpener = opener || document.activeElement;
-  setState({ p: 1, reg: false, dragging: false });
+  st.emOpener = (opener && mnav && mnav.contains(opener) && st.menuOpener) ? st.menuOpener : (opener || document.activeElement);
+  setState({ p: 1, reg: false, menu: false, dragging: false });
   focusStrip();
 }
 export function openReg(opener) {
-  st.opener = opener || document.activeElement;
-  setState({ reg: true, regDone: false, p: 0 });
+  // from inside the menu, focus goes back to the menu button that opened it (the menu closes)
+  st.opener = (opener && mnav && mnav.contains(opener) && st.menuOpener) ? st.menuOpener : (opener || document.activeElement);
+  setState({ reg: true, regDone: false, p: 0, menu: false });
   const delay = reduced() ? 0 : 200;
   setTimeout(() => { if (reg && st.reg) reg.focus({ preventScroll: true }); }, delay);
 }
+/* tablet/phone menu: drops from the header bar it was opened from */
+function placeMenu(btn) {
+  const bar = btn && btn.closest('.hbar');
+  if (!mnav || !bar) return;
+  const r = bar.getBoundingClientRect();
+  const top = Math.max(12, Math.round(r.top));
+  mnav.style.top = top + 'px';
+  mnav.style.right = Math.max(0, Math.round(window.innerWidth - r.right)) + 'px';
+  mnav.style.width = Math.min(440, Math.round(r.width)) + 'px';
+  mnav.style.maxHeight = `calc(100% - ${top + 12}px)`;
+}
+export function openMenu(opener) {
+  if (!mnav) return;
+  st.menuOpener = opener || document.activeElement;
+  placeMenu(st.menuOpener);
+  mnav.scrollTop = 0;
+  setState({ menu: true, reg: false, p: 0 });
+  const first = $('.mnav-links a, .mnav-links button', mnav);
+  setTimeout(() => { if (st.menu && first) first.focus({ preventScroll: true }); }, reduced() ? 0 : 120);
+}
 export function closeAll() {
-  const wasEm = st.p > 0.5, wasReg = st.reg;
-  setState({ reg: false, p: 0, dragging: false });
+  const wasEm = st.p > 0.5, wasReg = st.reg, wasMenu = st.menu;
+  setState({ reg: false, p: 0, dragging: false, menu: false });
   let back = null;
-  if (wasReg && st.opener && document.contains(st.opener)) back = st.opener;
+  if (wasMenu && st.menuOpener && document.contains(st.menuOpener)) back = st.menuOpener;
+  else if (wasReg && st.opener && document.contains(st.opener)) back = st.opener;
   else if (wasEm) back = (st.emOpener && document.contains(st.emOpener) && st.emOpener !== document.body) ? st.emOpener : (currentTab() || edgeTab);
   if (back && typeof back.focus === 'function') back.focus({ preventScroll: true });
-  st.opener = null; st.emOpener = null;
+  st.opener = null; st.emOpener = null; st.menuOpener = null;
 }
 // the tab the user should land on after closing: the visible one
 function currentTab() {
@@ -181,6 +212,9 @@ export function bindTab(tab) {
   tab.addEventListener('pointerdown', tabDown);
   tab.addEventListener('keydown', tabKey);
   tab.addEventListener('click', e => e.preventDefault());
+  // touch: the tap already toggled the strip on pointerup; cancel the click the browser would synthesise at the
+  // finger's spot, which can land on the scrim beside the newly opened strip and close it again (mouse is unaffected)
+  tab.addEventListener('touchend', e => { if (e.cancelable) e.preventDefault(); });
 }
 
 /* ---------- wiring ---------- */
@@ -192,12 +226,14 @@ function init() {
   window.addEventListener('pointerup', onUp);
   window.addEventListener('pointercancel', onUp);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && (st.p > 0 || st.reg)) { e.preventDefault(); closeAll(); return; }
-    if (st.reg && reg && reg.contains(document.activeElement)) trapTab(e, reg);
+    if (e.key === 'Escape' && (st.p > 0 || st.reg || st.menu)) { e.preventDefault(); closeAll(); return; }
+    if (st.menu && mnav && (mnav.contains(document.activeElement) || document.activeElement === mnav)) trapTab(e, mnav);
+    else if (st.reg && reg && reg.contains(document.activeElement)) trapTab(e, reg);
     else if (st.p > 0.5 && strip && (strip.contains(document.activeElement) || document.activeElement === strip)) trapTab(e, strip);
   });
   if (scrim) scrim.addEventListener('click', closeAll);
   document.addEventListener('click', e => {
+    const mb = e.target.closest('[data-open-menu]'); if (mb) { e.preventDefault(); if (st.menu) closeAll(); else openMenu(mb); return; }
     const o = e.target.closest('[data-open-reg]'); if (o) { e.preventDefault(); openReg(o); return; }
     const m = e.target.closest('[data-open-em]'); if (m) { e.preventDefault(); openEmergency(m); return; }
     const c = e.target.closest('[data-close-all]'); if (c) { e.preventDefault(); closeAll(); }
@@ -212,6 +248,12 @@ function init() {
     });
     $$('[data-species] .chip', reg).forEach(c => c.addEventListener('click', () => setState({ sp: c.textContent.trim() })));
   }
+  // the menu only exists below the tablet breakpoint: close it if the window grows past it
+  if (MENU_MQ) {
+    const off = () => { if (!MENU_MQ.matches && st.menu) { st.menuOpener = null; setState({ menu: false }); } };
+    if (MENU_MQ.addEventListener) MENU_MQ.addEventListener('change', off); else if (MENU_MQ.addListener) MENU_MQ.addListener(off);
+  }
+  window.addEventListener('resize', () => { if (st.menu) placeMenu(st.menuOpener); });
   render();
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

@@ -9,17 +9,17 @@ export const IMG = {
 
 /* ---------- home: "What brings you in?" (board Main: defs) ---------- */
 export const QUESTIONS = [
-  { id: 'wrong', title: "Something's not right", img: IMG.ear, pos: '55% 30%', desc: 'Off their food, limping, or just not themselves? We keep slots free every day for this.',
+  { id: 'wrong', title: "Something's not right", img: IMG.ear, alt: 'A nurse holding a cat in a towel while the vet checks its ear', pos: '55% 30%', desc: 'Off their food, limping, or just not themselves? We keep slots free every day for this.',
     opts: [['Book for today', 'book/'], ['Can it wait till morning?', 'emergency/'], ['WhatsApp us a photo', 'https://wa.me/353864960000']] },
-  { id: 'new', title: 'A new arrival', img: IMG.juno, pos: '50% 30%', desc: 'Puppy, kitten or rescue — the first visit sets them up for the year ahead.',
+  { id: 'new', title: 'A new arrival', img: IMG.juno, alt: 'A beagle sitting on a kitchen floor, looking up', pos: '50% 30%', desc: 'Puppy, kitten or rescue — the first visit sets them up for the year ahead.',
     opts: [['Book a first visit', 'book/'], ['The first-year guide', 'new-pet/'], ['Register with us', '#register']] },
-  { id: 'check', title: 'A check-up or jab', img: IMG.dental, pos: '55% 35%', desc: 'Boosters, health checks, nails and worming — the routine stuff.',
+  { id: 'check', title: 'A check-up or jab', img: IMG.dental, alt: "A vet checking a terrier's teeth", pos: '55% 35%', desc: 'Boosters, health checks, nails and worming — the routine stuff.',
     opts: [['Book a check-up', 'book/'], ['Book a nurse clinic', 'book/'], ['See our prices', 'services/']] },
-  { id: 'weight', title: 'Weight and diet', img: IMG.biscuit, pos: '45% 50%', desc: "We don't sell pet food, so you'll get an honest answer.",
+  { id: 'weight', title: 'Weight and diet', img: IMG.biscuit, alt: 'A cream puppy on the clinic scales', pos: '45% 50%', desc: "We don't sell pet food, so you'll get an honest answer.",
     opts: [['Book a weight clinic', 'book/'], ['Drop in for a weigh', 'contact/'], ['Ask a nurse', 'contact/']] },
-  { id: 'older', title: 'Getting on a bit', img: IMG.luna, pos: '35% 70%', desc: "Slower walks and stiff mornings. We'll help keep them comfortable.",
+  { id: 'older', title: 'Getting on a bit', img: IMG.luna, alt: 'An old Labrador resting at home', pos: '35% 70%', desc: "Slower walks and stiff mornings. We'll help keep them comfortable.",
     opts: [['Book a senior check', 'book/'], ['Pain and arthritis care', 'services/'], ["When it's time", 'people-we-trust/']] },
-  { id: 'holiday', title: 'Going away', img: IMG.park, pos: '45% 60%', desc: 'Leaving them at home in Dublin, or bringing them with you?',
+  { id: 'holiday', title: 'Going away', img: IMG.park, alt: 'A dog out on a walk in the park', pos: '45% 60%', desc: 'Leaving them at home in Dublin, or bringing them with you?',
     opts: [['Kennels and sitters', 'people-we-trust/'], ['Boarding with us', 'services/'], ['Pet passports', 'services/']] }
 ];
 

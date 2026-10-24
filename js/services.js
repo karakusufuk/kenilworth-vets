@@ -32,6 +32,19 @@ function paint() {
   $('[data-panel-p]').textContent = s[2];
   $('[data-panel-steps]').innerHTML = s[3].map((t, i) => `<div class="svc-step"><span class="serif n">${i + 1}</span><span class="t">${esc(t)}</span></div>`).join('');
 }
-groupsHost.addEventListener('click', e => { const c = e.target.closest('[data-group]'); if (c) { group = c.dataset.group; paint(); } });
-listHost.addEventListener('click', e => { const r = e.target.closest('[data-svc]'); if (r) { sel = r.dataset.svc; paint(); } });
+/* phones and portrait tablets: the panel sits right under the selected row instead of after the whole list */
+const panel = $('[data-panel]'), panelHome = panel.parentElement;
+const INLINE = window.matchMedia ? window.matchMedia('(max-width: 900px)') : null;
+function placePanel(anchor) {
+  const before = anchor ? anchor.getBoundingClientRect().top : 0;
+  const row = $('.svc-row[aria-pressed="true"]', listHost);
+  if (INLINE && INLINE.matches && row && !row.closest('.svc-group').hidden) { if (row.nextElementSibling !== panel) row.after(panel); }
+  else if (panel.parentElement !== panelHome) panelHome.appendChild(panel);
+  if (anchor) { const d = anchor.getBoundingClientRect().top - before; if (Math.abs(d) > 1) window.scrollBy(0, d); } // keep the tapped row where it was
+}
+if (INLINE) { const re = () => placePanel(); if (INLINE.addEventListener) INLINE.addEventListener('change', re); else if (INLINE.addListener) INLINE.addListener(re); }
+
+groupsHost.addEventListener('click', e => { const c = e.target.closest('[data-group]'); if (c) { group = c.dataset.group; paint(); placePanel(); } });
+listHost.addEventListener('click', e => { const r = e.target.closest('[data-svc]'); if (r) { sel = r.dataset.svc; paint(); placePanel(r); } });
 paint();
+placePanel();

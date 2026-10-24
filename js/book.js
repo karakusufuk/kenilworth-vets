@@ -58,8 +58,14 @@ go.addEventListener('click', () => { if (go.disabled) return; set({ step: st.ste
 $('[data-reset]').addEventListener('click', () => { set({ step: 1, bsp: null, name: '', reason: null, slot: null }); focusStep(); });
 
 // keep keyboard users oriented: focus the new step's heading (or the confirmation title)
+// tablets and phones: Continue can sit below or beside a scrolled step, so bring the new step's top back into view
+const STACKED = window.matchMedia ? window.matchMedia('(max-width: 1100px)') : null;
 function focusStep() {
   const el = st.step === 5 ? $('[data-confirm-t]') : $(`[data-step="${st.step}"] h1`);
   if (el) { if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); }
+  if (STACKED && STACKED.matches) {
+    const top = stepper.getBoundingClientRect().top + window.scrollY - 96;
+    if (window.scrollY > top) window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  }
 }
 paint();

@@ -119,11 +119,22 @@ function makeFrame(host, items) {
   let slide = 0;
   function paint() {
     track.style.transform = `translateX(calc(${-slide} * (74% + 44px)))`;
+    track.style.setProperty('--slide', slide); // phones/tablets slide by their own card width (css, ≤900 px)
     cards.forEach((c, i) => { c.classList.toggle('is-cur', i === slide); c.classList.toggle('is-past', i < slide); });
     if (label) label.textContent = `${slide + 1} / ${n}`;
   }
   $('[data-slide-prev]').addEventListener('click', () => { slide = Math.max(0, slide - 1); paint(); });
   $('[data-slide-next]').addEventListener('click', () => { slide = (slide + 1) % n; paint(); });
+  // touch: a horizontal swipe on the cards does what the arrows do (touch pointers only; mouse is untouched)
+  let sw = null;
+  track.addEventListener('pointerdown', e => { if (e.pointerType === 'touch') sw = { x: e.clientX, y: e.clientY }; });
+  track.addEventListener('pointerup', e => {
+    if (!sw || e.pointerType !== 'touch') return;
+    const dx = e.clientX - sw.x, dy = e.clientY - sw.y; sw = null;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+    slide = dx < 0 ? Math.min(n - 1, slide + 1) : Math.max(0, slide - 1); paint();
+  });
+  track.addEventListener('pointercancel', () => { sw = null; });
   paint();
 })();
 
@@ -132,7 +143,8 @@ function makeFrame(host, items) {
   const host = $('[data-moments]'), frameHost = $('[data-mframe]');
   if (!host || !frameHost) return;
   const frame = makeFrame(frameHost, MOMENTS);
-  host.innerHTML = MOMENTS.map((m, i) => `<a href="${REL}people-we-trust/" class="mcard${i === 0 ? ' is-on' : ''}" data-moment="${i}"><span class="mcard-t">${esc(m.t)}</span><span class="mcard-dot">${ARROW}</span></a>`).join('');
+  // .mcard-ph: the moment's photo inside its card, shown only at ≤1100 px (touch has no hover preview)
+  host.innerHTML = MOMENTS.map((m, i) => `<a href="${REL}people-we-trust/" class="mcard${i === 0 ? ' is-on' : ''}" data-moment="${i}"><span class="mcard-ph" aria-hidden="true"><img src="${href(m.img)}" alt="" loading="lazy" style="object-position:${m.pos}"></span><span class="mcard-t">${esc(m.t)}</span><span class="mcard-dot">${ARROW}</span></a>`).join('');
   const cards = $$('.mcard', host);
   let mom = 0;
   const set = i => { if (i === mom) return; mom = i; cards.forEach((c, k) => c.classList.toggle('is-on', k === mom)); frame.show(i); };
