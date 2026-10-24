@@ -87,3 +87,30 @@ export const NEW_PET_TOTAL = {
   Puppy: 'The whole first year comes to roughly €330 plus worming. Neutering is quoted separately.',
   Kitten: 'The whole first year comes to roughly €400, neutering and worming included.'
 };
+
+/* ---------- emergency page (board Emergency: now / later / raw) ---------- */
+export const EMERGENCY_NOW = [
+  { t: 'Trouble breathing', d: 'Breathing with their mouth open (especially cats), pale or blue gums, choking.' },
+  { t: 'Collapse or a fit', d: "Can't stand, is shaking or fitting, or won't respond to you." },
+  { t: 'Heavy bleeding', d: 'Still bleeding after five minutes of firm pressure.' },
+  { t: 'Poisoning', d: 'Chocolate, grapes, raisins, lilies (for cats), sugar-free gum, rat bait, painkillers.' },
+  { t: 'Swollen, tight belly', d: 'Especially in big dogs, retching with nothing coming up.' },
+  { t: 'A blocked cat', d: 'Straining in the litter tray with little or nothing coming out.' }
+];
+export const EMERGENCY_LATER = [
+  { t: 'A slight limp', d: 'Still putting weight on it, eating and otherwise themselves.' },
+  { t: 'Sick once', d: 'One go, bright afterwards, and keeping water down.' },
+  { t: 'A small cut', d: "Stops bleeding with pressure and isn't gaping." },
+  { t: 'Scratching an ear', d: 'Head shaking or a smell, but no tilt or wobble.' },
+  { t: 'Off their food', d: 'For a day, but drinking and normal. Two days — ring us.' },
+  { t: 'A runny eye', d: "Clear and the eye's open. Squinting or cloudy — ring us." }
+];
+export const EMERGENCY_STEPS = [
+  ['Ring ahead', "Even two minutes' warning means a vet is free and a room is ready."],
+  ['Bring the packet', 'If they ate something — a wrapper, a plant, a tablet box — bring it or take a photo.'],
+  ['Keep them still and warm', "A towel or a blanket. Carry them if they can't walk. Don't give food or water."],
+  ['Carrier for cats, lead for dogs', 'Even the calm ones. Pain makes everyone unpredictable.'],
+  ['Pull up at the door', "The two spaces outside are kept free. Ring the side bell and we'll come out to you."]
+];
+// the Contact page's hours table spells Sunday out (board Contact: hrs)
+export const CONTACT_HOURS = HOURS_ROWS.map(h => h[0] === 'Sunday' ? ['Sunday', 'Closed — ring for emergencies'] : h);
