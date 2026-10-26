@@ -426,8 +426,9 @@ a{color:var(--navy)}a:hover{color:var(--ink)}
 
 /* ---------- contact ---------- */
 .map{position:relative;height:600px;border-radius:44px;overflow:hidden;background:var(--paper)}
-.map-frame{position:absolute;inset:0}
-.map-frame iframe{width:100%;height:100%;border:0;display:block}
+.map-frame{position:absolute;inset:0;overflow:hidden}
+/* the embed is drawn larger than the frame and centred, so Google's own white boxes (place card top-left, logo and links bottom) fall outside the visible area; the map centre does not move */
+.map-frame iframe{position:absolute;left:-380px;top:-160px;width:calc(100% + 760px);height:calc(100% + 320px);border:0;display:block}
 .map-card{position:absolute;left:12px;top:12px;bottom:12px;width:460px;background:rgba(251,248,242,.97);border-radius:32px;padding:40px;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 60px -30px rgba(23,42,64,.45)}
 .map-card .lbl{color:var(--navy)}
 .map-card h1{margin:0;font-size:46px;line-height:1.02;font-weight:600;color:var(--navy)}
@@ -932,6 +933,7 @@ a{color:var(--navy)}a:hover{color:var(--ink)}
   .map-card{position:relative;left:auto;top:auto;bottom:auto;width:auto;padding:36px 32px 28px}
   .map-card h1{font-size:clamp(34px,3.6vw + 20px,44px)}
   .map-frame{position:relative;inset:auto;order:2;height:360px;border-radius:32px;overflow:hidden}
+  .map-frame iframe{left:0;top:-140px;width:100%;height:calc(100% + 280px)}   /* stacked: only the top and bottom are cropped, which hides Google's boxes and keeps the embed at screen width */
   .map-actions{margin-top:8px}
   .sec-write{padding:64px 0 64px}
   .write{gap:48px}
