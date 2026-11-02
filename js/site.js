@@ -35,7 +35,7 @@ function trapTab(e, root) {
 }
 
 /* ---------- state ---------- */
-const st = { p: 0, dragging: false, reg: false, regDone: false, sp: 'Dog', opener: null, emOpener: null, menu: false, menuOpener: null };
+const st = { p: 0, dragging: false, reg: false, sp: null, opener: null, emOpener: null, menu: false, menuOpener: null };
 const page = $('[data-page]');
 const strip = $('[data-estrip]');
 const stripIn = strip && $('.estrip-in', strip);
@@ -87,9 +87,6 @@ function render() {
     reg.classList.toggle('is-open', st.reg);
     reg.setAttribute('aria-hidden', st.reg ? 'false' : 'true');
     if (st.reg) reg.removeAttribute('inert'); else reg.setAttribute('inert', '');
-    const form = $('[data-reg-form]', reg), done = $('[data-reg-done]', reg);
-    if (form) form.hidden = st.regDone;
-    if (done) done.hidden = !st.regDone;
     $$('[data-species] .chip', reg).forEach(c => c.setAttribute('aria-pressed', c.textContent.trim() === st.sp ? 'true' : 'false'));
   }
   if (mnav) {
@@ -136,7 +133,7 @@ export function openEmergency(opener) {
 export function openReg(opener) {
   // from inside the menu, focus goes back to the menu button that opened it (the menu closes)
   st.opener = (opener && mnav && mnav.contains(opener) && st.menuOpener) ? st.menuOpener : (opener || document.activeElement);
-  setState({ reg: true, regDone: false, p: 0, menu: false });
+  setState({ reg: true, p: 0, menu: false });
   const delay = reduced() ? 0 : 200;
   setTimeout(() => { if (reg && st.reg) reg.focus({ preventScroll: true }); }, delay);
 }
@@ -233,6 +230,8 @@ function init() {
   });
   if (scrim) scrim.addEventListener('click', closeAll);
   document.addEventListener('click', e => {
+    // demo: Call and WhatsApp links do nothing at all (no dialling, no message)
+    if (e.target.closest('a[href^="tel:"], a[href*="wa.me/"]')) { e.preventDefault(); return; }
     const mb = e.target.closest('[data-open-menu]'); if (mb) { e.preventDefault(); if (st.menu) closeAll(); else openMenu(mb); return; }
     const o = e.target.closest('[data-open-reg]'); if (o) { e.preventDefault(); openReg(o); return; }
     const m = e.target.closest('[data-open-em]'); if (m) { e.preventDefault(); openEmergency(m); return; }
@@ -240,12 +239,8 @@ function init() {
   });
   if (reg) {
     const form = $('[data-reg-form]', reg);
-    if (form) form.addEventListener('submit', e => {
-      e.preventDefault();
-      setState({ regDone: true });
-      reg.scrollTop = 0;
-      const t = $('[data-reg-done-ttl]', reg); if (t) t.focus({ preventScroll: true });
-    });
+    // demo: "Send it in" stays faded and inactive, and Enter in a field sends nothing either
+    if (form) form.addEventListener('submit', e => e.preventDefault());
     $$('[data-species] .chip', reg).forEach(c => c.addEventListener('click', () => setState({ sp: c.textContent.trim() })));
   }
   // the menu only exists below the tablet breakpoint: close it if the window grows past it

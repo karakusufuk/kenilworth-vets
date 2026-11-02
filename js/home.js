@@ -55,19 +55,29 @@ function makeFrame(host, items) {
 }
 
 /* ---------- "What brings you in?" (board: LIST 504, OPEN 196, closed rows share the rest) ---------- */
+// Phones and portrait tablets (≤900 px): the side photo frame is hidden and each open row shows its own photo
+// between the title and the text; "Something's not right" starts open there, and an opened row is brought into view.
 (function questions() {
   const list = $('[data-qlist]'), frameHost = $('[data-qframe]');
   if (!list || !frameHost) return;
   const LIST = 504, OPEN = 196;
+  const STACKED = window.matchMedia ? window.matchMedia('(max-width: 900px)') : null;
+  const label = o => o[2] ? `<span class="qo-full">${esc(o[0])}</span><span class="qo-short">${esc(o[2])}</span>` : esc(o[0]);
   list.innerHTML = QUESTIONS.map((q, i) => `<div class="qrow" data-q="${q.id}">
 <button type="button" class="qbtn" aria-expanded="false" aria-controls="q-${q.id}" id="qb-${q.id}"><span class="serif">${esc(q.title)}</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
-<div class="qbody" id="q-${q.id}" role="region" aria-labelledby="qb-${q.id}"><p class="qdesc">${esc(q.desc)}</p><div class="qopts">${q.opts.map(o => o[1] === '#register'
-    ? `<a href="${REL}" class="btn btn-mustard btn-sm" data-open-reg tabindex="-1">${esc(o[0])}</a>`
-    : `<a href="${href(o[1])}" class="btn btn-mustard btn-sm" tabindex="-1">${esc(o[0])}</a>`).join('')}</div></div>
+<div class="qbody" id="q-${q.id}" role="region" aria-labelledby="qb-${q.id}"><span class="qph"><img src="${href(q.img)}" alt="${esc(q.alt)}" loading="lazy" style="object-position:${q.pos}"></span><p class="qdesc">${esc(q.desc)}</p><div class="qopts${q.pair ? ' is-pair' : ''}">${q.opts.map(o => o[1] === '#register'
+    ? `<a href="${REL}" class="btn btn-mustard btn-sm" data-open-reg tabindex="-1">${label(o)}</a>`
+    : `<a href="${href(o[1])}" class="btn btn-mustard btn-sm${o[1] === 'book/' ? ' qo-book' : ''}" tabindex="-1">${label(o)}</a>`).join('')}</div></div>
 </div>`).join('');
   const frame = makeFrame(frameHost, QUESTIONS);
   const rows = $$('.qrow', list);
-  let open = null;
+  let open = STACKED && STACKED.matches ? QUESTIONS[0].id : null;
+  // keep the opened row whole on screen, below the fixed header
+  function reveal(row) {
+    const { top, bottom } = row.getBoundingClientRect();
+    const head = (hfixed ? parseFloat(getComputedStyle(hfixed).top) || 12 : 12) + 64 + 12;
+    if (top < head || bottom > window.innerHeight - 12) window.scrollTo({ top: Math.max(0, window.scrollY + top - head), behavior: reduced() ? 'auto' : 'smooth' });
+  }
   function paint() {
     const any = open !== null;
     const closedH = any ? (LIST - OPEN) / 5 : LIST / 6;
@@ -84,6 +94,7 @@ function makeFrame(host, items) {
   rows.forEach((row, i) => $('.qbtn', row).addEventListener('click', () => {
     if (open === row.dataset.q) { open = null; paint(); return; }
     open = row.dataset.q; paint(); frame.show(i);
+    if (STACKED && STACKED.matches) reveal(row);
   }));
   paint();
 })();
@@ -102,29 +113,58 @@ function makeFrame(host, items) {
 })();
 
 /* ---------- Noticeboard slider: 74 % cards, tilts alternate, only the current card in colour ---------- */
+// Phones and portrait tablets (≤900 px) loop both ways: a copy of the last card sits before the first and a copy of
+// the first after the last, so 4 → 1 and 1 → 4 slide one step like any other; once the slide lands on a copy the
+// track jumps, unanimated, to the real card underneath. Desktop keeps the board's behaviour and never shows the copies.
 (function slider() {
   const track = $('[data-track]');
   if (!track) return;
   const n = HOME_STORIES.length;
-  track.innerHTML = HOME_STORIES.map(s => `<article class="nb-card">
-<div class="nb-card-ph"><div class="ph"><img src="${href(s.img)}" alt="${esc(s.alt)}"></div></div>
+  const LOOP = window.matchMedia ? window.matchMedia('(max-width: 900px)') : null;
+  const card = (s, copy) => `<article class="nb-card${copy ? ' nb-copy' : ''}"${copy ? ' aria-hidden="true" inert' : ''}>
+<div class="nb-card-ph"><div class="ph"><img src="${href(s.img)}" alt="${copy ? '' : esc(s.alt)}"></div></div>
 <div class="nb-card-copy">
 <div class="nb-meta"><span class="tag ${s.tagClass}">${esc(s.tag)}</span><span class="nb-date">${esc(s.date)}</span></div>
 <h3 class="serif">${esc(s.title)}</h3>
 <p>${esc(s.body)}</p>
-<div class="nb-cta"><a href="${REL}noticeboard/story/?s=${s.id}" class="btn btn-line btn-sm">${esc(s.cta)}</a></div>
+<div class="nb-cta"><a href="${REL}noticeboard/story/?s=${s.id}" class="btn btn-line btn-sm"${copy ? ' tabindex="-1"' : ''}>${esc(s.cta)}</a></div>
 </div>
-</article>`).join('');
+</article>`;
+  track.innerHTML = card(HOME_STORIES[n - 1], true) + HOME_STORIES.map(s => card(s)).join('') + card(HOME_STORIES[0], true);
   const cards = $$('.nb-card', track), label = $('[data-slide-label]');
-  let slide = 0;
+  let slide = 0;   // the story shown, 0 … n-1
+  let pos = 1;     // looping track position, 0 … n+1 (0 and n+1 are the copies)
+  let settle = null;
+  const loops = () => !!(LOOP && LOOP.matches);
   function paint() {
     track.style.transform = `translateX(calc(${-slide} * (74% + 44px)))`;
-    track.style.setProperty('--slide', slide); // phones/tablets slide by their own card width (css, ≤900 px)
-    cards.forEach((c, i) => { c.classList.toggle('is-cur', i === slide); c.classList.toggle('is-past', i < slide); });
+    track.style.setProperty('--slide', pos); // phones/tablets slide by their own card width (css, ≤900 px)
+    cards.forEach((c, i) => {
+      const k = loops() ? i : i - 1; // desktop counts real cards only (the copies are display:none there)
+      const at = loops() ? pos : slide;
+      c.classList.toggle('is-cur', k === at); c.classList.toggle('is-past', k < at);
+    });
     if (label) label.textContent = `${slide + 1} / ${n}`;
   }
-  $('[data-slide-prev]').addEventListener('click', () => { slide = Math.max(0, slide - 1); paint(); });
-  $('[data-slide-next]').addEventListener('click', () => { slide = (slide + 1) % n; paint(); });
+  // after a slide onto a copy: swap to the real card without any transition
+  function land() {
+    clearTimeout(settle); settle = null;
+    if (pos !== 0 && pos !== n + 1) return;
+    pos = pos === 0 ? n : 1;
+    track.classList.add('is-jump');
+    paint();
+    void track.offsetWidth; // commit the jump before transitions come back
+    track.classList.remove('is-jump');
+  }
+  track.addEventListener('transitionend', e => { if (e.target === track && e.propertyName === 'transform') land(); });
+  function go(d) {
+    if (!loops()) { slide = d > 0 ? (slide + 1) % n : Math.max(0, slide - 1); paint(); return; }
+    if (settle) land(); // a tap mid-slide finishes the last one first
+    pos += d; slide = (slide + d + n) % n; paint();
+    if (pos === 0 || pos === n + 1) settle = setTimeout(land, reduced() ? 0 : 900);
+  }
+  $('[data-slide-prev]').addEventListener('click', () => go(-1));
+  $('[data-slide-next]').addEventListener('click', () => go(1));
   // touch: a horizontal swipe on the cards does what the arrows do (touch pointers only; mouse is untouched)
   let sw = null;
   track.addEventListener('pointerdown', e => { if (e.pointerType === 'touch') sw = { x: e.clientX, y: e.clientY }; });
@@ -132,9 +172,12 @@ function makeFrame(host, items) {
     if (!sw || e.pointerType !== 'touch') return;
     const dx = e.clientX - sw.x, dy = e.clientY - sw.y; sw = null;
     if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+    if (loops()) { go(dx < 0 ? 1 : -1); return; }
     slide = dx < 0 ? Math.min(n - 1, slide + 1) : Math.max(0, slide - 1); paint();
   });
   track.addEventListener('pointercancel', () => { sw = null; });
+  // crossing the breakpoint: put the looping position back on the real card
+  if (LOOP) { const re = () => { clearTimeout(settle); settle = null; pos = slide + 1; track.classList.add('is-jump'); paint(); void track.offsetWidth; track.classList.remove('is-jump'); }; if (LOOP.addEventListener) LOOP.addEventListener('change', re); else if (LOOP.addListener) LOOP.addListener(re); }
   paint();
 })();
 

@@ -1,11 +1,12 @@
-// Book: the four-step pill stepper, each step, the sticky summary, Back / Continue and the confirmation.
+// Book: the four-step pill stepper, each step, the sticky summary and Back / Continue.
 // State and rules are the board's: a reason click moves straight to step 3; Continue is disabled until the
-// step is complete; the slot availability is seeded by day and vet; "Book another" keeps vet and day.
+// step is complete; the slot availability is seeded by day and vet. Nothing is chosen for the visitor: the times
+// show once a day is picked. This is a demo, so the last button, "Confirm booking", stays faded and inactive.
 import { $, $$ } from './site.js';
-import { BOOK_REASONS, BOOK_STEPS, BOOK_SPECIES, BOOK_VETS, BOOK_DAYS, BOOK_DAYS_FULL, BOOK_FREE, BOOK_TIMES } from './data.js';
+import { BOOK_REASONS, BOOK_STEPS, BOOK_SPECIES, BOOK_VETS, BOOK_DAYS, BOOK_FREE, BOOK_TIMES } from './data.js';
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-const st = { step: 1, bsp: null, name: '', reason: null, vet: "Whoever's free", day: 1, slot: null };
+const st = { step: 1, bsp: null, name: '', reason: null, vet: null, day: null, slot: null };
 
 const stepper = $('[data-stepper]'), speciesHost = $('[data-species]'), nameInput = $('[data-name]'), reasonsHost = $('[data-reasons]');
 const vetsHost = $('[data-vets]'), daysHost = $('[data-days]'), slotsHost = $('[data-slots]');
@@ -18,7 +19,7 @@ vetsHost.innerHTML = BOOK_VETS.map(v => `<button type="button" class="chip" data
 daysHost.innerHTML = BOOK_DAYS.map((d, i) => `<button type="button" class="day" data-day="${i}" aria-pressed="false"><span class="day-w">${d[0]}</span><span class="serif day-n">${d[1]}</span><span class="day-f">${BOOK_FREE[i]} free</span></button>`).join('');
 
 const ampm = t => { const h = parseInt(t, 10); return t + (h >= 9 && h <= 12 ? (h === 12 ? 'pm' : 'am') : 'pm'); };
-const taken = i => ((i * 5 + st.day * 7 + st.vet.length) % 7) < 3;
+const taken = i => ((i * 5 + st.day * 7 + (st.vet || BOOK_VETS[0]).length) % 7) < 3;
 
 function paint() {
   const r = BOOK_REASONS.find(x => x[0] === st.reason);
@@ -31,19 +32,18 @@ function paint() {
   $$('[data-reason]', reasonsHost).forEach(b => b.setAttribute('aria-pressed', b.dataset.reason === st.reason ? 'true' : 'false'));
   $$('[data-vet]', vetsHost).forEach(c => c.setAttribute('aria-pressed', c.dataset.vet === st.vet ? 'true' : 'false'));
   $$('[data-day]', daysHost).forEach(d => d.setAttribute('aria-pressed', +d.dataset.day === st.day ? 'true' : 'false'));
-  slotsHost.innerHTML = BOOK_TIMES.map((t, i) => { const dis = taken(i); return `<button type="button" class="slot" data-slot="${t}" aria-pressed="${st.slot === t}"${dis ? ' disabled aria-disabled="true"' : ''}>${t}</button>`; }).join('');
+  slotsHost.hidden = st.day === null;
+  slotsHost.innerHTML = st.day === null ? '' : BOOK_TIMES.map((t, i) => { const dis = taken(i); return `<button type="button" class="slot" data-slot="${t}" aria-pressed="${st.slot === t}"${dis ? ' disabled aria-disabled="true"' : ''}>${t}</button>`; }).join('');
   // summary
   const petLabel = st.bsp ? (st.name ? st.name + ' · ' + st.bsp.toLowerCase() : st.bsp) : '—';
-  const dd = BOOK_DAYS[st.day];
-  const rows = [['Who', petLabel], ['What for', st.reason || '—'], ['How long', r ? r[2] : '—'], ['With', st.vet], ['When', st.slot ? `${dd[0]} ${dd[1]} Oct, ${ampm(st.slot)}` : '—']];
+  const dd = st.day === null ? null : BOOK_DAYS[st.day];
+  const rows = [['Who', petLabel], ['What for', st.reason || '—'], ['How long', r ? r[2] : '—'], ['With', st.vet || '—'], ['When', st.slot ? `${dd[0]} ${dd[1]} Oct, ${ampm(st.slot)}` : '—']];
   sumRows.innerHTML = rows.map(x => `<div class="bsum-row"><span class="k">${esc(x[0])}</span><span class="v">${esc(x[1])}</span></div>`).join('');
   sumPrice.textContent = r ? r[3] : '—';
-  const dis = (st.step === 1 && !st.bsp) || (st.step === 2 && !st.reason) || (st.step === 3 && !st.slot);
-  go.hidden = st.step >= 5;
+  const dis = (st.step === 1 && !st.bsp) || (st.step === 2 && !st.reason) || (st.step === 3 && !st.slot) || st.step === 4;
   go.disabled = dis;
   go.setAttribute('aria-disabled', dis ? 'true' : 'false');
   go.textContent = st.step === 4 ? 'Confirm booking' : 'Continue';
-  if (st.step === 5) $('[data-confirm-t]').textContent = `See you ${BOOK_DAYS_FULL[st.day]} the ${dd[1]}${dd[1] === '31' ? 'st' : 'th'} at ${ampm(st.slot)}.`;
 }
 function set(part) { Object.assign(st, part); paint(); }
 
@@ -54,14 +54,13 @@ vetsHost.addEventListener('click', e => { const c = e.target.closest('[data-vet]
 daysHost.addEventListener('click', e => { const d = e.target.closest('[data-day]'); if (d) set({ day: +d.dataset.day, slot: null }); });
 slotsHost.addEventListener('click', e => { const s = e.target.closest('[data-slot]'); if (s && !s.disabled) set({ slot: s.dataset.slot }); });
 $$('[data-back]').forEach(b => b.addEventListener('click', () => { set({ step: Math.max(1, st.step - 1) }); focusStep(); }));
-go.addEventListener('click', () => { if (go.disabled) return; set({ step: st.step + 1 }); focusStep(); });
-$('[data-reset]').addEventListener('click', () => { set({ step: 1, bsp: null, name: '', reason: null, slot: null }); focusStep(); });
+go.addEventListener('click', () => { if (go.disabled || st.step >= 4) return; set({ step: st.step + 1 }); focusStep(); });
 
-// keep keyboard users oriented: focus the new step's heading (or the confirmation title)
+// keep keyboard users oriented: focus the new step's heading
 // tablets and phones: Continue can sit below or beside a scrolled step, so bring the new step's top back into view
 const STACKED = window.matchMedia ? window.matchMedia('(max-width: 1100px)') : null;
 function focusStep() {
-  const el = st.step === 5 ? $('[data-confirm-t]') : $(`[data-step="${st.step}"] h1`);
+  const el = $(`[data-step="${st.step}"] h1`);
   if (el) { if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); }
   if (STACKED && STACKED.matches) {
     const top = stepper.getBoundingClientRect().top + window.scrollY - 96;

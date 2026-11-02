@@ -8,9 +8,10 @@ export const IMG = {
 };
 
 /* ---------- home: "What brings you in?" (board Main: defs) ---------- */
+// opts: [label, link, phone label]. `pair`: on phones the first two buttons share a row (otherwise they stack).
 export const QUESTIONS = [
-  { id: 'wrong', title: "Something's not right", img: IMG.ear, alt: 'A nurse holding a cat in a towel while the vet checks its ear', pos: '55% 30%', desc: 'Off their food, limping, or just not themselves? We keep slots free every day for this.',
-    opts: [['Book for today', 'book/'], ['Can it wait till morning?', 'emergency/'], ['WhatsApp us a photo', 'https://wa.me/353864960000']] },
+  { id: 'wrong', pair: true, title: "Something's not right", img: IMG.ear, alt: 'A nurse holding a cat in a towel while the vet checks its ear', pos: '55% 30%', desc: 'Off their food, limping, or just not themselves? We keep slots free every day for this.',
+    opts: [['Book for today', 'book/', 'Book'], ['Can it wait till morning?', 'emergency/'], ['WhatsApp us a photo', 'https://wa.me/353864960000']] },
   { id: 'new', title: 'A new arrival', img: IMG.juno, alt: 'A beagle sitting on a kitchen floor, looking up', pos: '50% 30%', desc: 'Puppy, kitten or rescue — the first visit sets them up for the year ahead.',
     opts: [['Book a first visit', 'book/'], ['The first-year guide', 'new-pet/'], ['Register with us', '#register']] },
   { id: 'check', title: 'A check-up or jab', img: IMG.dental, alt: "A vet checking a terrier's teeth", pos: '55% 35%', desc: 'Boosters, health checks, nails and worming — the routine stuff.',
@@ -118,7 +119,7 @@ export const CONTACT_HOURS = HOURS_ROWS.map(h => h[0] === 'Sunday' ? ['Sunday', 
 /* ---------- the Noticeboard (board Noticeboard: all) — ids in SPEC §2.2 order ---------- */
 export const NOTICEBOARD = [
   { id: 'bobby', k: 'Birthdays', tagClass: 'tag-b', tag: 'Birthday', title: 'Bobby turned four', body: 'Four years since a very small, very loud Jack Russell cross came in for his first jab. Still loud. Teeth spotless at his check-up, and he walked straight past the scales like he owns the place.', date: '12 Oct 2026', who: 'Written by Ciarán', cta: "Read Bobby's story", img: IMG.sofa, alt: 'Bobby asleep on the sofa' },
-  { id: 'miso', k: 'Recoveries', tagClass: 'tag-r', tag: 'On the mend', title: "Miso's home", body: 'Miso had a lump taken off her side in September — nothing sinister, thank God. The shaved patch is nearly gone and, according to her family, so is her patience with the cone.', date: '3 Oct 2026', who: 'Written by Aoife', cta: 'Read more', img: IMG.miso, alt: 'Miso the tabby asleep on a bed' },
+  { id: 'miso', k: 'Recoveries', tagClass: 'tag-r', tag: 'On the mend', title: "Miso's home", body: 'Miso had a lump taken off her side in September — nothing sinister, thank God. The shaved patch is nearly gone and, according to her family, so is her patience with the cone.', date: '3 Oct 2026', who: 'Written by Ríonach', cta: 'Read more', img: IMG.miso, alt: 'Miso the tabby asleep on a bed' },
   { id: 'pip', k: 'Recoveries', tagClass: 'tag-r', tag: 'Teeth sorted', title: 'Pip can crunch again', body: "Rabbit teeth never stop growing, and Pip's had grown into a problem. A dental under a light anaesthetic, a week of soft greens, and he's back on the carrots.", date: '29 Sep 2026', who: 'Written by Niamh', cta: 'Read more', img: IMG.pip, alt: 'Pip the rabbit on a towel' },
   { id: 'luna', k: 'Birthdays', tagClass: 'tag-b', tag: 'Thirteen', title: 'Luna, still going strong', body: "Our oldest regular. Slower on the stairs since the spring, on a joint plan that's working, and still first to the bowl every evening.", date: '27 Sep 2026', who: 'Written by Niamh', cta: 'Read more', img: IMG.luna, alt: 'Luna the old Labrador lying by her bowl' },
   { id: 'biscuit', k: 'Birthdays', tagClass: 'tag-b', tag: 'First visit', title: 'Biscuit on the scales', body: "Two kilos of cockapoo who wouldn't stay on the scales for more than half a second. First jab done, second one booked for November.", date: '22 Sep 2026', who: 'Written by Gráinne', cta: 'Read more', img: IMG.biscuit, alt: 'Biscuit the puppy on the scales' },
@@ -127,7 +128,7 @@ export const NOTICEBOARD = [
 export const NOTICEBOARD_FILTERS = ['Everything', 'Birthdays', 'Recoveries', 'Needs a home'];
 
 /* ---------- story pages (board Story for Bobby; the other five written from their card facts only) ---------- */
-const TEAM_IMG = { ciaran: ['images/t_ciaran.webp', '45% 20%'], aoife: ['images/t_aoife.webp', '55% 30%'], niamh: ['images/t_niamh.webp', '40% 30%'], grainne: ['images/t_grainne.webp', '45% 30%'] };
+const TEAM_IMG = { ciaran: ['images/t_ciaran.webp', '45% 20%'], rionach: ['images/t_rionach.webp', '55% 30%'], niamh: ['images/t_niamh.webp', '40% 30%'], grainne: ['images/t_grainne.webp', '45% 30%'] };
 export const STORIES = {
   bobby: { tagClass: 'tag-b', tag: 'Birthday', date: '12 October 2026', title: 'Bobby turned four',
     photos: [[IMG.sofa, 'Bobby asleep on the sofa', 'Birthday morning, on sofa duty'], [IMG.dental, 'Bobby having his teeth checked', 'His yearly check — teeth spotless'], [IMG.park, 'Bobby on a lead in the park', 'Kenilworth Square, straight after']],
@@ -140,19 +141,19 @@ export const STORIES = {
     body: ['Miso came in to us in September with a lump on her side. We took it off and had it checked, and the answer was the one we were all hoping for — nothing sinister, thank God.',
       "She has spent the weeks since in a cone, and she has not been shy about what she thinks of it. The shaved patch on her side is nearly gone now and, according to her family, so is her patience with the cone.",
       "The fur's nearly grown back and, we're told, so has the attitude. That is exactly what we like to hear. Good girl, Miso."],
-    author: { name: 'Aoife Brennan', sub: "Veterinary nurse · shared with her family's permission", img: TEAM_IMG.aoife } },
+    author: { name: 'Ríonach Fogarty', sub: "Veterinary nurse · shared with her family's permission", img: TEAM_IMG.rionach } },
   pip: { tagClass: 'tag-r', tag: 'Teeth sorted', date: '29 September 2026', title: 'Pip can crunch again',
     photos: [[IMG.pip, 'Pip the rabbit on a towel']],
     body: ["Rabbit teeth never stop growing, and Pip's had grown into a problem. So he came in to us for a dental.",
       'We did it under a light anaesthetic, tidied the teeth up and sent him home with orders for a week of soft greens.',
       "A week on, he's back on the carrots and crunching away like nothing happened. Fair play, Pip."],
-    author: { name: 'Dr Niamh Kearney', sub: "Founder · shared with his family's permission", img: TEAM_IMG.niamh } },
+    author: { name: 'Dr Niamh Cuddihy', sub: "Founder · shared with his family's permission", img: TEAM_IMG.niamh } },
   luna: { tagClass: 'tag-b', tag: 'Thirteen', date: '27 September 2026', title: 'Luna, still going strong',
     photos: [[IMG.luna, 'Luna the old Labrador lying by her bowl']],
     body: ['Luna has turned thirteen, which makes her our oldest regular — and she wears it well.',
       "She has been a bit slower on the stairs since the spring, so we put her on a joint plan. It's working, and she is still first to the bowl every evening.",
       'Happy birthday, Luna. Thirteen suits you.'],
-    author: { name: 'Dr Niamh Kearney', sub: "Founder · shared with her family's permission", img: TEAM_IMG.niamh } },
+    author: { name: 'Dr Niamh Cuddihy', sub: "Founder · shared with her family's permission", img: TEAM_IMG.niamh } },
   biscuit: { tagClass: 'tag-b', tag: 'First visit', date: '22 September 2026', title: 'Biscuit on the scales',
     photos: [[IMG.biscuit, 'Biscuit the puppy on the scales']],
     body: ["Biscuit came in for a first visit: two kilos of cockapoo who wouldn't stay on the scales for more than half a second. We got a weight in the end.",
@@ -173,26 +174,25 @@ export const STORY_ORDER = ['bobby', 'miso', 'pip', 'luna', 'biscuit', 'tina'];
 export const BOOK_REASONS = [['A jab or booster', 'With a quick health check', '15 min', '€72'], ["Something's not right", 'Off food, limping, sick', '15 min', '€65'], ['A follow-up', 'After surgery or treatment', '10 min', '€35'], ['A senior check', 'Bloods, joints, blood pressure', '30 min', '€110'], ['Nurse clinic', 'Nails, worming, a weigh', '15 min', '€25'], ['A travel check', 'Passport, rabies, tapeworm', '20 min', '€60']];
 export const BOOK_STEPS = ['Pet', 'Reason', 'Time', 'Details'];
 export const BOOK_SPECIES = ['Dog', 'Cat', 'Rabbit', 'Something else'];
-export const BOOK_VETS = ["Whoever's free", 'Dr Niamh Kearney', 'Dr Ciarán Doyle'];
+export const BOOK_VETS = ["Whoever's free", 'Dr Niamh Cuddihy', 'Dr Ciarán Doyle'];
 export const BOOK_DAYS = [['Mon', '26'], ['Tue', '27'], ['Wed', '28'], ['Thu', '29'], ['Fri', '30'], ['Sat', '31']];
-export const BOOK_DAYS_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 export const BOOK_FREE = [5, 8, 3, 9, 6, 2];
 export const BOOK_TIMES = ['9:00', '9:20', '9:40', '10:20', '11:00', '11:40', '12:20', '2:00', '2:40', '3:40', '4:20', '5:40'];
 
 /* ---------- My Pet demo (board MyPet) ---------- */
 export const MYPET = {
   facts: [['Born', '2 Mar 2023 · 3 yrs'], ['Microchip', '372 1410 0028 5531'], ['Pet passport', 'IE 0147 2209'], ['Insured with', 'Allianz Pet'], ['Usual vet', 'Dr Ciarán Doyle']],
-  meds: [{ t: 'Milbemax (worming)', d: 'One tablet with food', when: 'Due today', cls: 'tag-h' }, { t: 'Bravecto (fleas & ticks)', d: 'Every 12 weeks', when: '9 Dec', cls: 'tag-blue' }, { t: 'Weight clinic check', d: 'With Aoife, 10 mins', when: '18 Nov', cls: 'tag-blue' }],
+  meds: [{ t: 'Milbemax (worming)', d: 'One tablet with food', when: 'Due today', cls: 'tag-h' }, { t: 'Bravecto (fleas & ticks)', d: 'Every 12 weeks', when: '9 Dec', cls: 'tag-blue' }, { t: 'Weight clinic check', d: 'With Ríonach, 10 mins', when: '18 Nov', cls: 'tag-blue' }],
   vax: [{ t: 'Puppy 1', d: 'Apr 2023' }, { t: 'Puppy 2', d: 'May 2023' }, { t: 'Booster', d: 'Nov 2024' }, { t: 'Booster', d: 'Nov 2025' }, { t: 'Booster', d: 'Due 11 Nov', due: true }],
-  visits: [{ date: '14 Oct 2026', t: 'Weight clinic', note: 'Down another 0.4 kg. Keep going — same food, smaller breakfast.', who: 'Aoife, nurse' }, { date: '2 Aug 2026', t: 'Ear infection', note: 'Left ear. Drops for seven days, rechecked and clear.', who: 'Dr Ciarán Doyle' }, { date: '12 May 2026', t: 'Weight clinic — first visit', note: '15.1 kg. Aiming for 13 kg by Christmas.', who: 'Aoife, nurse' }, { date: '10 Nov 2025', t: 'Yearly booster', note: "All good. A bit of tartar — brush if she'll let you.", who: 'Dr Niamh Kearney' }],
+  visits: [{ date: '14 Oct 2026', t: 'Weight clinic', note: 'Down another 0.4 kg. Keep going — same food, smaller breakfast.', who: 'Ríonach, nurse' }, { date: '2 Aug 2026', t: 'Ear infection', note: 'Left ear. Drops for seven days, rechecked and clear.', who: 'Dr Ciarán Doyle' }, { date: '12 May 2026', t: 'Weight clinic — first visit', note: '15.1 kg. Aiming for 13 kg by Christmas.', who: 'Ríonach, nurse' }, { date: '10 Nov 2025', t: 'Yearly booster', note: "All good. A bit of tartar — brush if she'll let you.", who: 'Dr Niamh Cuddihy' }],
   reminders: [{ id: 'booster', t: 'Jab due', d: 'A week before, then on the day' }, { id: 'worming', t: 'Worming and fleas', d: "Monthly, the morning it's due" }, { id: 'appt', t: 'Appointment reminder', d: 'The evening before, at 6pm' }, { id: 'results', t: 'Test results back', d: 'As soon as the vet has looked at them' }],
   channels: ['Email', 'Text', 'Call'],
   defaults: { booster: 'Text', worming: 'Email', appt: 'Text', results: 'Call' },
   msgs: {
-    booster: "Hi Sinéad, Juno's yearly booster is due on 11 Nov. Reply BOOK and we'll hold 9:40am on Tue 11th for her, or book online. — Kenilworth Vets",
+    booster: "Hi Laoise, Juno's yearly booster is due on 11 Nov. Reply BOOK and we'll hold 9:40am on Tue 11th for her, or book online. — Kenilworth Vets",
     worming: "Morning! Juno's worming tablet is due today — one Milbemax, with her breakfast. — Kenilworth Vets",
     appt: "Just a reminder: Juno's seeing Dr Doyle tomorrow at 9:40am. Reply C if you need to cancel. — Kenilworth Vets",
-    results: "Good news — Juno's bloods are back and all normal. Dr Kearney's notes are in My Pet. — Kenilworth Vets"
+    results: "Good news — Juno's bloods are back and all normal. Dr Cuddihy's notes are in My Pet. — Kenilworth Vets"
   },
   second: { off: 'Add a partner or housemate so they get the same reminders', on: 'Darragh Murphy · 086 555 0410 gets jab and appointment texts too' }
 };
@@ -210,9 +210,9 @@ export const PARTNERS = [
 
 /* ---------- the team (board Team) ---------- */
 export const TEAM = [
-  { img: 'images/t_niamh.webp', pos: '40% 30%', name: 'Dr Niamh Kearney', role: 'Vet · founder', bio: "Opened the practice in 2009 after twelve years at a big hospital in Cork. Still does most of the senior checks, because she's known half those dogs since they were puppies.", facts: [['With us since', '2009'], ['Qualified', 'UCD, 1997'], ['Ask her about', 'Older dogs, arthritis, nutrition'], ['At home', 'Maeve, a 12-year-old collie']] },
+  { img: 'images/t_niamh.webp', pos: '40% 30%', name: 'Dr Niamh Cuddihy', role: 'Vet · founder', bio: "Opened the practice in 2009 after twelve years at a big hospital in Cork. Still does most of the senior checks, because she's known half those dogs since they were puppies.", facts: [['With us since', '2009'], ['Qualified', 'UCD, 1997'], ['Ask her about', 'Older dogs, arthritis, nutrition'], ['At home', 'Maeve, a 12-year-old collie']] },
   { img: 'images/t_ciaran.webp', pos: '45% 25%', name: 'Dr Ciarán Doyle', role: 'Vet', bio: "Does most of our surgery and dentals. Will happily draw you a diagram of your dog's knee whether you asked for one or not.", facts: [['With us since', '2016'], ['Qualified', 'UCD, 2008'], ['Ask him about', 'Surgery, teeth, cats who hate vets'], ['At home', 'Two cats, Fig and Biscuit']] },
-  { img: 'images/t_aoife.webp', pos: '55% 30%', name: 'Aoife Brennan', role: 'Veterinary nurse', bio: 'Runs the weight clinic and the nurse clinics. The reason your cat eventually came out of the carrier. Has a real soft spot for rabbits.', facts: [['With us since', '2014'], ['Qualified', 'RVN, 2011'], ['Ask her about', 'Weight, diet, rabbits'], ['At home', 'Rua, a retired greyhound']] },
+  { img: 'images/t_rionach.webp', pos: '55% 30%', name: 'Ríonach Fogarty', role: 'Veterinary nurse', bio: 'Runs the weight clinic and the nurse clinics. The reason your cat eventually came out of the carrier. Has a real soft spot for rabbits.', facts: [['With us since', '2014'], ['Qualified', 'RVN, 2011'], ['Ask her about', 'Weight, diet, rabbits'], ['At home', 'Rua, a retired greyhound']] },
   { img: 'images/t_tomasz.webp', pos: '50% 35%', name: 'Tomasz Nowak', role: 'Veterinary nurse', bio: "Looks after anaesthetics, recovery and the phone calls after surgery. Grew up on a farm outside Kraków and hasn't met an animal he can't calm down.", facts: [['With us since', '2018'], ['Qualified', 'RVN, 2012'], ['Ask him about', 'Recovery after surgery, nervous dogs'], ['At home', "Tina, for now — she's looking for a family"]] },
   { img: 'images/t_grainne.webp', pos: '45% 30%', name: 'Gráinne Ryan', role: 'Front desk', bio: "Has been on the desk since the day we opened. Knows every patient by name and most of them by bark. If you're not sure what to book, ring and ask her.", facts: [['With us since', '2009'], ['Before that', 'Twenty years in a Rathmines pharmacy'], ['Ask her about', 'Anything at all'], ['At home', 'Dill, a very nosy tabby']] }
 ];
