@@ -1,4 +1,4 @@
-// New pet guide: Puppy/Kitten toggle swaps the timeline and the total line; the reminder sign-up shows its done state.
+// New pet guide: Puppy/Kitten toggle swaps the timeline and the total line; the reminder sign-up is a demo, so it sends nothing.
 import { $, $$ } from './site.js';
 import { NEW_PET, NEW_PET_TOTAL } from './data.js';
 
@@ -18,10 +18,4 @@ function paint() {
 $('[data-kinds]').addEventListener('click', e => { const c = e.target.closest('[data-kind]'); if (c) { kind = c.dataset.kind; paint(); } });
 paint();
 
-const form = $('[data-remind-form]');
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  form.hidden = true;
-  const done = $('[data-remind-done]'); done.hidden = false;
-  $('[data-remind-done-t]').focus({ preventScroll: true });
-});
+$('[data-remind-form]').addEventListener('submit', e => e.preventDefault());
